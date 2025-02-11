@@ -1,0 +1,103 @@
+import streamlit as st
+import os
+import faiss
+from langchain_community.vectorstores import FAISS
+from dotenv import load_dotenv
+from azure.cosmos import CosmosClient
+from langchain.prompts import PromptTemplate
+from langchain.chains import RetrievalQA
+from langchain_openai import AzureChatOpenAI
+
+# Load environment variables
+load_dotenv()
+
+# Azure Cosmos DB credentials
+cosmos_endpoint = "your_cosmos_db_endpoint_here"
+cosmos_key = "your_cosmos_db_key_here"
+database_name = "your_database_name"
+cosmos_container_name = "your_cosmos_container_name"
+
+# Azure OpenAI credentials
+embedding_endpoint = "https://testsaas.openai.azure.com/openai/deployments/text-embedding-3-large/embeddings?api-version=2023-05-15"
+api_key = "43a4462838614de36c2"
+
+# Initialize Cosmos DB Client
+cosmos_client = CosmosClient(cosmos_endpoint, cosmos_key)
+database = cosmos_client.get_database_client(database_name)
+container = database.get_container_client(cosmos_container_name)
+
+# Function to load embeddings from Cosmos DB
+def load_embeddings_from_cosmos():
+    items = container.query_items(
+        query="SELECT * FROM c",
+        enable_cross_partition_query=True
+    )
+    return list(items)
+
+# Custom function to create RAG pipeline
+def setup_rag_pipeline():
+    # Azure OpenAI Configuration with provided endpoint and key
+    llm = AzureChatOpenAI(
+        azure_deployment="gpt-35-turbo",
+        azure_endpoint="https://testsaas.openai.azure.com",
+        openai_api_key=api_key,
+        api_version="2023-03-15-preview",
+        model="gpt-35-turbo",
+        temperature=0.3
+    )
+
+    # Create a Prompt Template
+    prompt_template = """You are an AI Assistant. Given the following context:
+    {context}
+    
+    Answer the following question:
+    {question}
+    
+    Assistant:"""
+    
+    prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
+
+    # Create a RetrievalQA Chain
+    qa = RetrievalQA.from_chain_type(
+        llm=llm, 
+        chain_type="stuff", 
+        retriever=None,  # Placeholder, will set it later
+        return_source_documents=True,
+        chain_type_kwargs={"prompt": prompt}
+    )
+    
+    return qa
+
+# Initialize Streamlit App
+st.title("Judgment Search Assistant")
+
+# Load Embeddings
+embeddings = load_embeddings_from_cosmos()
+
+# Setup the RAG pipeline
+rag_pipeline = setup_rag_pipeline()
+
+# Streamlit Interface for Querying the Model
+question = st.text_input("Ask a question about the judgments:")
+
+if st.button("Submit"):
+    if question:
+        # Implement logic to find the most relevant documents based on the question
+        # This could be a cosine similarity search or similar retrieval method
+        # For demonstration, let's assume we are just returning the first document
+        relevant_docs = embeddings[:6]  # Get first 6 documents for demo purposes
+
+        # Set the retriever for the RAG pipeline
+        rag_pipeline.retriever = FAISS.from_embeddings([doc['embedding'] for doc in relevant_docs], relevant_docs)
+
+        # Generate a response using the RAG pipeline
+        response = rag_pipeline.invoke({"question": question})
+        
+        st.write("**Response:**")
+        st.write(response["result"])
+        
+        st.write("**Source Judgments:**")
+        for doc in response["source_documents"]:
+            st.write(doc['content'])
+    else:
+        st.write("Please enter a question.")
