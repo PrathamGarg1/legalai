@@ -1,4 +1,4 @@
-#Legal Document Search and Analysis Tool
+<b>Legal Document Search and Analysis Tool</b>
 
 
 Technologies Used: Azure OpenAI, Azure Cognitive Search, Streamlit, FAISS, PyPDF2, Azure Blob Storage, Azure Cosmos DB
