@@ -1,4 +1,6 @@
-Legal Document Search and Analysis Tool
+#Legal Document Search and Analysis Tool
+
+
 Technologies Used: Azure OpenAI, Azure Cognitive Search, Streamlit, FAISS, PyPDF2, Azure Blob Storage, Azure Cosmos DB
 
 Scraped the Indian Kanoon website to gather a comprehensive dataset of legal documents.
