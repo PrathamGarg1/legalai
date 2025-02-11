@@ -3,11 +3,13 @@
 
 <b>Legal Document Search and Analysis Tool</b>
 
-### Service Endpoints
+### Service Endpoints (Protected by Azure)
 ```python
 ACS_ENDPOINT = "legal-ai-search.search.windows.net"
 AOAI_ENDPOINT = "testsaas.openai.azure.com"
 ```
+
+
 
 
 Technologies Used: Azure OpenAI, Azure Cognitive Search, Streamlit, FAISS, PyPDF2, Azure Blob Storage, Azure Cosmos DB
