@@ -1,6 +1,13 @@
-![mermaid-diagram-2025-02-11-135902](https://github.com/user-attachments/assets/ecae60f5-b356-489a-82dd-040a6e8061bc)<b>Legal Document Search and Analysis Tool</b>
+![mermaid-diagram-2025-02-11-135902](https://github.com/user-attachments/assets/ecae60f5-b356-489a-82dd-040a6e8061bc)
 
 
+<b>Legal Document Search and Analysis Tool</b>
+
+### Service Endpoints
+```python
+ACS_ENDPOINT = "legal-ai-search.search.windows.net"
+AOAI_ENDPOINT = "testsaas.openai.azure.com"
+```
 
 
 Technologies Used: Azure OpenAI, Azure Cognitive Search, Streamlit, FAISS, PyPDF2, Azure Blob Storage, Azure Cosmos DB
