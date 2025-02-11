@@ -1,5 +1,6 @@
 <b>Legal Document Search and Analysis Tool</b>
 
+![mermaid-diagram-2025-02-11-135825](https://github.com/user-attachments/assets/2cf3a036-9b8d-44d2-88f3-e23fd0a61031)
 
 Technologies Used: Azure OpenAI, Azure Cognitive Search, Streamlit, FAISS, PyPDF2, Azure Blob Storage, Azure Cosmos DB
 
